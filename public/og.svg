@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="GR Studio Field Unit">
+  <rect width="1200" height="630" fill="#0B0907"/>
+  <rect x="70" y="40" width="1060" height="550" rx="8" fill="#16120E"/>
+  <g transform="translate(430,55)">
+    <rect x="0" y="0" width="340" height="520" rx="42" fill="#D8D2C4"/>
+    <rect x="28" y="42" width="284" height="188" rx="22" fill="#5F6548"/>
+    <rect x="72" y="62" width="214" height="148" fill="#C6CFA3"/>
+    <text x="170" y="142" text-anchor="middle" font-family="Georgia, serif" font-size="22" fill="#1A2210">GR STUDIO</text>
+    <circle cx="86" cy="360" r="28" fill="#2B2B2B"/>
+    <circle cx="232" cy="338" r="24" fill="#8A2458"/>
+    <circle cx="274" cy="372" r="24" fill="#8A2458"/>
+  </g>
+  <text x="600" y="600" text-anchor="middle" font-family="Georgia, serif" font-size="22" fill="#F7F5F1">Play the studio</text>
+</svg>
