@@ -206,14 +206,20 @@ function useImage(src: string | undefined) {
 export function Lcd({
   model,
   markSrc,
+  onReady,
 }: {
   model: LcdModel;
   markSrc: string;
+  onReady?: (canvas: HTMLCanvasElement) => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mark = useImage(markSrc);
   const stillSrc = WORK[model.caseIndex]?.still;
   const still = useImage(stillSrc);
+
+  useEffect(() => {
+    if (canvasRef.current) onReady?.(canvasRef.current);
+  }, [onReady]);
 
   useEffect(() => {
     const canvas = canvasRef.current;

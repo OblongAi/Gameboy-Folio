@@ -21,6 +21,11 @@ body {
   -webkit-user-select: none;
 }
 
+::selection {
+  background: #2a3f8f;
+  color: #f7f5f1;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -47,238 +52,54 @@ body {
   display: none;
 }
 
-.unit {
+.unit-stage {
   position: relative;
-  width: min(92vw, calc(94dvh * 624 / 1024));
-  aspect-ratio: 624 / 1024;
-  z-index: 1;
+  width: min(100vw, 110dvh);
+  height: 100dvh;
 }
 
-.unit-photo {
-  pointer-events: none;
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: fill;
+.unit-canvas {
+  position: relative;
+  z-index: 1;
+  width: 100% !important;
+  height: 100% !important;
+  touch-action: none;
   display: block;
 }
 
-.slogan-cover {
+.lcd-source {
+  position: absolute;
+  width: 160px;
+  height: 144px;
+  left: 8px;
+  top: 8px;
+  opacity: 0.02;
+  z-index: 0;
   pointer-events: none;
-  position: absolute;
-  left: 25.4%;
-  top: 10.48%;
-  width: 51%;
-  height: 1.45%;
-  margin: 0;
-  display: grid;
-  place-items: center;
-  background: #5a5766;
-  color: #d8d4cc;
-  font-size: clamp(5px, 1.02vw, 8px);
-  letter-spacing: 0.16em;
-  z-index: 3;
-}
-
-.lcd-well {
-  position: absolute;
-  left: 24.2%;
-  top: 13.57%;
-  width: 51.28%;
-  height: 28.52%;
   overflow: hidden;
-  z-index: 4;
-  background: #4d5a28;
-  border-radius: 0.6%;
-  box-shadow: inset 0 0 0 1px rgba(10, 12, 8, 0.55);
 }
 
 .lcd-canvas {
-  width: 100%;
-  height: 100%;
+  width: 160px;
+  height: 144px;
   display: block;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }
 
-.lcd-glass,
-.lcd-scan {
-  pointer-events: none;
-  position: absolute;
-  inset: 0;
-}
-
-.lcd-glass {
-  background:
-    linear-gradient(125deg, rgba(255, 255, 255, 0.14) 0%, transparent 28%),
-    linear-gradient(180deg, transparent 68%, rgba(20, 24, 10, 0.12));
-}
-
-.lcd-scan {
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(30, 34, 16, 0.06) 0 1px,
-    transparent 1px 3px
-  );
-}
-
-.battery-led {
-  pointer-events: none;
-  position: absolute;
-  left: 16.4%;
-  top: 26.2%;
-  width: 1.7%;
-  height: 1.05%;
-  border-radius: 50%;
-  background: #2a0c0c;
-  z-index: 5;
-}
-
-.battery-led.is-on {
-  background: #d3182b;
-  box-shadow: 0 0 5px 1px rgba(211, 24, 43, 0.55);
-}
-
-.logo-cover {
-  pointer-events: none;
-  position: absolute;
-  left: 10.5%;
-  top: 47.55%;
-  width: 56%;
-  height: 5.1%;
-  margin: 0;
-  display: grid;
-  place-items: center start;
-  padding-left: 1.5%;
-  background: transparent;
-  color: #2a3f8f;
-  font-weight: 800;
-  font-style: italic;
-  letter-spacing: 0.02em;
-  font-size: clamp(17px, 4.4vw, 34px);
-  transform: skewX(-10deg);
-  z-index: 3;
-}
-
-.hot {
-  position: absolute;
-  z-index: 8;
-  border: 0;
-  padding: 0;
-  margin: 0;
-  background: transparent;
-  cursor: pointer;
-  touch-action: manipulation;
-}
-
-.hot:active,
-.hot.is-down {
-  background: rgba(0, 0, 0, 0.18);
-}
-
-.hot-power {
-  left: 6.4%;
-  top: 0;
-  width: 22%;
-  height: 4.2%;
-}
-
-.hot-dpad {
-  position: absolute;
-  left: 9.62%;
-  top: 60.55%;
-  width: 23.24%;
-  height: 14.16%;
-  z-index: 8;
-}
-
-.hot-dpad .hot {
-  background: transparent;
-}
-
-.hot-dpad .hot:active,
-.hot-dpad .hot.is-down {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.pad-up,
-.pad-down {
-  left: 31%;
-  width: 38%;
-  height: 38%;
-}
-
-.pad-up {
-  top: 0;
-}
-
-.pad-down {
-  bottom: 0;
-}
-
-.pad-left,
-.pad-right {
-  top: 31%;
-  width: 38%;
-  height: 38%;
-}
-
-.pad-left {
-  left: 0;
-}
-
-.pad-right {
-  right: 0;
-}
-
-.hot-b {
-  left: 63.78%;
-  top: 65.53%;
-  width: 11.22%;
-  height: 6.93%;
-  border-radius: 50%;
-}
-
-.hot-a {
-  left: 79.81%;
-  top: 60.94%;
-  width: 11.22%;
-  height: 7.03%;
-  border-radius: 50%;
-}
-
-.hot-select,
-.hot-start {
-  width: 13.2%;
-  height: 3.3%;
-  border-radius: 99px;
-  transform: rotate(-26deg);
-}
-
-.hot-select {
-  left: 31.6%;
-  top: 81.05%;
-}
-
-.hot-start {
-  left: 46.2%;
-  top: 80.25%;
-}
-
 .studio-credit {
   position: absolute;
   z-index: 6;
-  left: 5.5%;
-  bottom: 2%;
-  width: 11%;
-  color: #0b0907;
-  opacity: 0.26;
+  left: 18px;
+  bottom: 16px;
+  width: 72px;
+  color: #f7f5f1;
+  opacity: 0.28;
 }
 
 .studio-credit:hover,
 .studio-credit:focus-visible {
-  opacity: 0.75;
+  opacity: 0.85;
 }
 
 .credit-svg {
