@@ -13,9 +13,9 @@ export const PALETTES: Record<PaletteId, Palette> = {
   field: {
     id: "field",
     name: "FIELD",
-    paper: "#C6CFA3",
-    mid: "#8B9568",
-    ink: "#3E4A2A",
+    paper: "#9AA54C",
+    mid: "#6F7A38",
+    ink: "#2C3416",
     deep: "#1A2210",
   },
   lime: {

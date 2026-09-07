@@ -1,3 +1,4 @@
+import type { MouseEvent } from "react";
 import type { ButtonId } from "../lib/machine";
 import { GrStudioLogo } from "./brand/GrStudioLogo";
 import { Lcd, type LcdModel } from "./Lcd";
@@ -6,60 +7,48 @@ const MARK_SRC = "/favicon.svg";
 
 type Props = {
   model: LcdModel;
-  tilt: { x: number; y: number };
   onPress: (id: ButtonId) => void;
-  onRelease: () => void;
   onPower: () => void;
-  onContrast: (value: number) => void;
 };
 
-export function FieldUnit({
-  model,
-  tilt,
-  onPress,
-  onRelease,
-  onPower,
-  onContrast,
-}: Props) {
-  const press = (id: ButtonId) => () => onPress(id);
-  const is = (id: ButtonId) => model.pressed === id;
+export function FieldUnit({ model, onPress, onPower }: Props) {
+  const click = (id: ButtonId) => (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onPress(id);
+  };
 
   return (
-    <div
-      className="unit"
-      style={{
-        transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
-      }}
-    >
+    <div className="unit">
       <div className="unit-shadow" aria-hidden />
       <div className="shell">
-        <div className="shell-lip" aria-hidden />
+        <div className="shell-edge" aria-hidden />
         <div className="shell-grain" aria-hidden />
 
         <button
           type="button"
           className={`power ${model.powered ? "on" : ""}`}
           aria-label={model.powered ? "Power off" : "Power on"}
-          onClick={onPower}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onPower();
+          }}
         >
-          <span />
+          <span className="power-knob" />
+          <span className="power-caption">OFF ON</span>
         </button>
 
-        <label className="contrast">
-          <span className="sr-only">Contrast</span>
-          <input
-            type="range"
-            min={0.35}
-            max={1}
-            step={0.01}
-            value={model.contrast}
-            onChange={(e) => onContrast(Number(e.target.value))}
-          />
-        </label>
-
-        <div className="lens">
-          <div className={`led ${model.powered ? "lit" : ""}`} aria-hidden />
-          <p className="battery-label">BATTERY</p>
+        <div className="bezel">
+          <div className="bezel-rules" aria-hidden>
+            <i className="rule rule-purple" />
+            <p className="bezel-caption">GR STUDIO FIELD UNIT</p>
+            <i className="rule rule-blue" />
+          </div>
+          <div className="battery">
+            <span className={`led ${model.powered ? "lit" : ""}`} />
+            <span>BATTERY</span>
+          </div>
           <div className="lcd-well">
             <Lcd model={model} markSrc={MARK_SRC} />
             <div className="lcd-glass" aria-hidden />
@@ -67,90 +56,30 @@ export function FieldUnit({
           </div>
         </div>
 
-        <div className="wordmark">
-          <GrStudioLogo className="wordmark-svg" title="GR Studio" />
+        <p className="wordmark" aria-hidden>
+          GR STUDIO
+        </p>
+
+        <div className="dpad-well">
+          <div className="dpad" role="group" aria-label="Direction pad">
+            <button type="button" className="pad pad-up" aria-label="Up" onClick={click("up")} />
+            <button type="button" className="pad pad-left" aria-label="Left" onClick={click("left")} />
+            <button type="button" className="pad pad-right" aria-label="Right" onClick={click("right")} />
+            <button type="button" className="pad pad-down" aria-label="Down" onClick={click("down")} />
+            <span className="pad-hub" aria-hidden />
+          </div>
         </div>
 
-        <div className="controls">
-          <div className="dpad" role="group" aria-label="Direction pad">
-            <button
-              type="button"
-              className={`pad pad-up ${is("up") ? "down" : ""}`}
-              aria-label="Up"
-              onPointerDown={press("up")}
-              onPointerUp={onRelease}
-              onPointerLeave={onRelease}
-            />
-            <button
-              type="button"
-              className={`pad pad-left ${is("left") ? "down" : ""}`}
-              aria-label="Left"
-              onPointerDown={press("left")}
-              onPointerUp={onRelease}
-              onPointerLeave={onRelease}
-            />
-            <span className="pad-hub" aria-hidden />
-            <button
-              type="button"
-              className={`pad pad-right ${is("right") ? "down" : ""}`}
-              aria-label="Right"
-              onPointerDown={press("right")}
-              onPointerUp={onRelease}
-              onPointerLeave={onRelease}
-            />
-            <button
-              type="button"
-              className={`pad pad-down ${is("down") ? "down" : ""}`}
-              aria-label="Down"
-              onPointerDown={press("down")}
-              onPointerUp={onRelease}
-              onPointerLeave={onRelease}
-            />
-          </div>
-
-          <div className="face" role="group" aria-label="Action buttons">
-            <button
-              type="button"
-              className={`face-btn b ${is("b") ? "down" : ""}`}
-              aria-label="B, back"
-              onPointerDown={press("b")}
-              onPointerUp={onRelease}
-              onPointerLeave={onRelease}
-            />
-            <span className="face-letter letter-b" aria-hidden>
-              B
-            </span>
-            <button
-              type="button"
-              className={`face-btn a ${is("a") ? "down" : ""}`}
-              aria-label="A, confirm"
-              onPointerDown={press("a")}
-              onPointerUp={onRelease}
-              onPointerLeave={onRelease}
-            />
-            <span className="face-letter letter-a" aria-hidden>
-              A
-            </span>
-          </div>
+        <div className="face" role="group" aria-label="Action buttons">
+          <button type="button" className="face-btn b" aria-label="B, back" onClick={click("b")} />
+          <span className="face-letter letter-b">B</span>
+          <button type="button" className="face-btn a" aria-label="A, confirm" onClick={click("a")} />
+          <span className="face-letter letter-a">A</span>
         </div>
 
         <div className="pills" role="group" aria-label="Start and Select">
-          <button
-            type="button"
-            className={`pill ${is("select") ? "down" : ""}`}
-            aria-label="Select, system"
-            onPointerDown={press("select")}
-            onPointerUp={onRelease}
-            onPointerLeave={onRelease}
-          />
-          <button
-            type="button"
-            className={`pill ${is("start") ? "down" : ""}`}
-            aria-label="Start, mail"
-            onPointerDown={press("start")}
-            onPointerUp={onRelease}
-            onPointerLeave={onRelease}
-          />
+          <button type="button" className="pill" aria-label="Select, system" onClick={click("select")} />
+          <button type="button" className="pill" aria-label="Start, mail" onClick={click("start")} />
           <div className="pill-labels">
             <span>SELECT</span>
             <span>START</span>
@@ -162,6 +91,10 @@ export function FieldUnit({
             <i key={i} />
           ))}
         </div>
+
+        <p className="phones" aria-hidden>
+          PHONES
+        </p>
 
         <a
           className="studio-credit"

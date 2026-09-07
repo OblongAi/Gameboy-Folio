@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer, useRef, useState, type PointerEvent } from "react";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { FieldUnit } from "./components/FieldUnit";
 import { usePrefersReducedMotion } from "./hooks/usePrefersReducedMotion";
 import { playBack, playBootChime, playClick, playConfirm, resumeAudio } from "./lib/audio";
@@ -24,7 +24,6 @@ type Action =
   | { type: "bootDone" }
   | { type: "press"; id: ButtonId }
   | { type: "release" }
-  | { type: "contrast"; value: number }
   | { type: "pulse"; value: number };
 
 function clamp(n: number, min: number, max: number) {
@@ -71,7 +70,6 @@ function reduce(state: Machine, action: Action): Machine {
     return { ...state, booting: false, screen: "home", bootY: 52, cursor: 0 };
   }
   if (action.type === "release") return { ...state, pressed: null };
-  if (action.type === "contrast") return { ...state, contrast: action.value };
   if (action.type === "pulse") return { ...state, pulse: action.value };
   if (action.type !== "press") return state;
   if (!state.powered) return state;
@@ -199,37 +197,6 @@ function reduce(state: Machine, action: Action): Machine {
   return next;
 }
 
-function keyToButton(e: KeyboardEvent): ButtonId | null {
-  switch (e.key) {
-    case "ArrowUp":
-      return "up";
-    case "ArrowDown":
-      return "down";
-    case "ArrowLeft":
-      return "left";
-    case "ArrowRight":
-      return "right";
-    case "z":
-    case "Z":
-    case "Enter":
-      return "a";
-    case "x":
-    case "X":
-    case "Backspace":
-    case "Escape":
-      return "b";
-    case " ":
-      return "start";
-    case "Tab":
-    case "c":
-    case "C":
-    case "Shift":
-      return "select";
-    default:
-      return null;
-  }
-}
-
 export function App() {
   const reduced = usePrefersReducedMotion();
   const [state, dispatch] = useReducer(
@@ -238,7 +205,6 @@ export function App() {
     initialMachine,
   );
   const [notice, setNotice] = useState(false);
-  const [tilt, setTilt] = useState({ x: 8, y: -6 });
   const soundRef = useRef(state.sound);
   soundRef.current = state.sound;
 
@@ -248,15 +214,8 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    const lock = (e: Event) => e.preventDefault();
     document.documentElement.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
-    document.body.addEventListener("wheel", lock, { passive: false });
-    document.body.addEventListener("touchmove", lock, { passive: false });
-    return () => {
-      document.body.removeEventListener("wheel", lock);
-      document.body.removeEventListener("touchmove", lock);
-    };
   }, []);
 
   useEffect(() => {
@@ -303,70 +262,22 @@ export function App() {
         else playClick();
       }
       dispatch({ type: "press", id });
-      window.setTimeout(() => dispatch({ type: "release" }), 140);
+      window.setTimeout(() => dispatch({ type: "release" }), 160);
     },
     [notice],
   );
-
-  useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      const id = keyToButton(e);
-      if (!id) return;
-      e.preventDefault();
-      if (e.repeat && id !== "up" && id !== "down") return;
-      fire(id);
-    };
-    window.addEventListener("keydown", down);
-    return () => window.removeEventListener("keydown", down);
-  }, [fire]);
-
-  useEffect(() => {
-    let raf = 0;
-    const held = new Set<number>();
-    const map: Array<[number, ButtonId]> = [
-      [12, "up"],
-      [13, "down"],
-      [14, "left"],
-      [15, "right"],
-      [0, "a"],
-      [1, "b"],
-      [9, "start"],
-      [8, "select"],
-    ];
-    const poll = () => {
-      const pad = navigator.getGamepads?.()[0];
-      if (pad) {
-        for (const [index, id] of map) {
-          const down = Boolean(pad.buttons[index]?.pressed);
-          if (down && !held.has(index)) fire(id);
-          if (down) held.add(index);
-          else held.delete(index);
-        }
-      }
-      raf = requestAnimationFrame(poll);
-    };
-    raf = requestAnimationFrame(poll);
-    return () => cancelAnimationFrame(raf);
-  }, [fire]);
-
-  const onMove = (e: PointerEvent<HTMLElement>) => {
-    if (reduced) return;
-    const x = (e.clientX / window.innerWidth - 0.5) * 16;
-    const y = (0.5 - e.clientY / window.innerHeight) * 10;
-    setTilt({ x: y + 6, y: x - 2 });
-  };
 
   const live =
     !state.powered
       ? "Unit off"
       : notice
-        ? "Cookie notice. Press A to continue."
+        ? "Cookie notice. Click A to continue."
         : state.booting
           ? "GR Studio loading"
           : `${state.screen} screen`;
 
   return (
-    <main className="stage" onPointerMove={onMove}>
+    <main className="stage">
       <h1 className="sr-only">GR Studio Field Unit</h1>
       <p className="sr-only" aria-live="polite">
         {live}
@@ -374,14 +285,11 @@ export function App() {
       <div className="stage-glow" aria-hidden />
       <FieldUnit
         model={{ ...state, notice }}
-        tilt={reduced ? { x: 6, y: -4 } : tilt}
         onPress={fire}
-        onRelease={() => dispatch({ type: "release" })}
         onPower={() => {
           resumeAudio();
           dispatch({ type: "power" });
         }}
-        onContrast={(value) => dispatch({ type: "contrast", value })}
       />
     </main>
   );
