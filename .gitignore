@@ -24,7 +24,10 @@ dist-ssr
 *.sw?
 
 qa-*.png
-qa-shot.mjs
+qa-*.mjs
+scripts/
+src/assets/field-unit.jpg
+src/assets/*-swatch.jpg
 .impeccable/*.local.json
 .claude/
 .codex/
